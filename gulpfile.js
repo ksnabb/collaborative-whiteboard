@@ -31,9 +31,15 @@ gulp.task('templates-tests', function() {
     './tests/tests.js'
   ];
 
-  var browserified = function() {
+  var browserified = function(debug) {
+    if(debug === undefined) {
+      debug = false;
+    }
     return transform(function(filename) {
-      var b = browserify(filename);
+      var b = browserify({
+        debug: debug,
+        entries: [filename]
+      });
       return b.bundle();
     });
   };
@@ -48,7 +54,7 @@ gulp.task('templates-tests', function() {
   gulp.task('javascript-develop', function() {
 
     return gulp.src(jsFiles)
-      .pipe(browserified())
+      .pipe(browserified(true))
       .pipe(gulp.dest('./public'));
 
   });
