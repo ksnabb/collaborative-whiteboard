@@ -1,13 +1,8 @@
-var canvas = document.querySelector("canvas");
-var context = canvas.getContext("2d");
-
-
-// create a websocket connection
-var socketConnection = new WebSocket("ws://localhost:7000/api");
-var isTouchDevice = 'ontouchstart' in document.documentElement;
-
 (function() {
-  var coords,
+  var canvas = document.querySelector("canvas"),
+    context = canvas.getContext("2d"),
+    socketConnection = new WebSocket("ws://localhost:7000/api"),
+    coords,
     pressed = false,
     innerWidth = window.innerWidth,
     innerHeight = window.innerHeight,
@@ -15,7 +10,8 @@ var isTouchDevice = 'ontouchstart' in document.documentElement;
     currentPath = [],
     peerPathsToBeDrawn = [],
     clientXY,
-    clientId = Date.now(); // client id as the time, good enough for this scenario
+    isTouchDevice = 'ontouchstart' in document.documentElement,
+    clientId = Date.now(); // client id as the current time, good enough for this scenario;
 
   // translate between client and canvas coordinates
   var clientToCanvas = function(clientX, clientY) {
@@ -23,8 +19,9 @@ var isTouchDevice = 'ontouchstart' in document.documentElement;
     canvasY = (canvas.height / innerHeight) * clientY;
     return [Math.round(canvasX), Math.round(canvasY)];
   };
+  // get the clientX and clientY from either mouse event or touch event
   var getClientXY = function(evt) {
-    if(evt.type === "touchmove" || evt.type === "touchstart") {
+    if (evt.type === "touchmove" || evt.type === "touchstart") {
       clientX = evt.targetTouches[0].clientX;
       clientY = evt.targetTouches[0].clientY;
     } else {
@@ -48,18 +45,18 @@ var isTouchDevice = 'ontouchstart' in document.documentElement;
       context.stroke();
       currentPath.push(coords);
     }
-  };  
-  
+  };
+  // draw paths received from peers
   var drawPeerPaths = function() {
     var i, j, path;
-    if(!pressed) {
-      for(i = 0; i < peerPathsToBeDrawn.length; i++) {
+    if (!pressed) {
+      for (i = 0; i < peerPathsToBeDrawn.length; i++) {
         path = peerPathsToBeDrawn[i].path;
-        
-        for(j = 0; j < path.length; j++) {
-          if(j === 0) {
+
+        for (j = 0; j < path.length; j++) {
+          if (j === 0) {
             context.moveTo(path[j][0], path[j][1]);
-          } else if(j === path.length -1) {
+          } else if (j === path.length - 1) {
             context.stroke();
           } else {
             context.lineTo(path[j][0], path[j][1]);
@@ -67,7 +64,7 @@ var isTouchDevice = 'ontouchstart' in document.documentElement;
         }
       }
       peerPathsToBeDrawn = [];
-    } 
+    }
   };
   var stop = function(evt) {
     pressed = false;
@@ -78,11 +75,11 @@ var isTouchDevice = 'ontouchstart' in document.documentElement;
       "id": clientId
     }));
     currentPath = [];
-    
+
     drawPeerPaths();
   };
   
-  if(isTouchDevice) {
+  if (isTouchDevice) {
     canvas.addEventListener("touchstart", start);
     canvas.addEventListener("touchend", stop);
     canvas.addEventListener("touchcancel", stop);
@@ -93,18 +90,17 @@ var isTouchDevice = 'ontouchstart' in document.documentElement;
     canvas.addEventListener("mousemove", drag);
     canvas.addEventListener("mouseup", stop);
     canvas.addEventListener("mouseleave", function() {
-      if(pressed) { // need to check if pressed as mouseleave might trigger anyway
+      if (pressed) {
         stop();
       }
     });
   }
-
+  
   socketConnection.onmessage = function(event) {
     var i, data = JSON.parse(event.data);
-    if(data.id !== clientId) {
+    if (data.id !== clientId) {
       peerPathsToBeDrawn.push(data);
       drawPeerPaths();
     }
   };
-
 })();
