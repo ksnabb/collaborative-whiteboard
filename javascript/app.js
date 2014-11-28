@@ -12,6 +12,11 @@
     clientXY,
     isTouchDevice = 'ontouchstart' in document.documentElement,
     clientId = Date.now(); // client id as the current time, good enough for this scenario;
+    
+  window.onresize = function(evt) {
+    innerWidth = window.innerWidth;
+    innerHeight = window.innerHeight;
+  };
 
   // translate between client and canvas coordinates
   var clientToCanvas = function(clientX, clientY) {
