@@ -25,8 +25,7 @@ gulp.task('templates-tests', function() {
 
 (function() {
   var jsFiles = [
-    './javascript/app.js',
-    './javascript/workers/recorder.js'
+    './javascript/app.js'
   ];
   var jsTestFiles = [
     './tests/tests.js'
@@ -43,14 +42,14 @@ gulp.task('templates-tests', function() {
 
     return gulp.src(jsFiles)
       .pipe(browserified())
-      .pipe(gulp.dest('./public/js'));
+      .pipe(gulp.dest('./public'));
   });
 
   gulp.task('javascript-develop', function() {
 
     return gulp.src(jsFiles)
       .pipe(browserified())
-      .pipe(gulp.dest('./public/js'));
+      .pipe(gulp.dest('./public'));
 
   });
 
@@ -58,7 +57,7 @@ gulp.task('templates-tests', function() {
 
     return gulp.src(jsTestFiles)
       .pipe(browserified())
-      .pipe(gulp.dest('./public/js'));
+      .pipe(gulp.dest('./public'));
   });
 })();
 
@@ -68,7 +67,7 @@ gulp.task('styles', function() {
     .pipe(stylus({
       use: nib()
     }))
-    .pipe(gulp.dest('./public/css'));
+    .pipe(gulp.dest('./public'));
 });
 
 

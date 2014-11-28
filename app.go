@@ -23,7 +23,7 @@ func main() {
 	}
 	mux := mux.NewRouter()
 	mux.HandleFunc("/api", eventHandler)
-	mux.Handle("/", http.FileServer(http.Dir(dir+"/public")))
+	mux.PathPrefix("/").Handler(http.FileServer(http.Dir(dir + "/public")))
 
 	http.Handle("/", mux)
 
