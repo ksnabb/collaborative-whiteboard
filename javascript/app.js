@@ -1,7 +1,7 @@
 (function() {
   var canvas = document.querySelector("canvas"),
     context = canvas.getContext("2d"),
-    socketConnection = new WebSocket("ws://localhost:7000/api"),
+    socketConnection = new WebSocket("ws://" + document.location.host + "/api"),
     coords,
     pressed = false,
     innerWidth = window.innerWidth,
