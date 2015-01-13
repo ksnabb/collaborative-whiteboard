@@ -12,7 +12,7 @@ import (
 )
 
 func upgradeToWebsocket(w http.ResponseWriter, r *http.Request) (c *websocket.Conn) {
-	log.Print("upgrade to websocket connection")
+
 	var upgrader = websocket.Upgrader{
 		ReadBufferSize:  1024,
 		WriteBufferSize: 1024,
@@ -75,7 +75,7 @@ func eventHandler(w http.ResponseWriter, r *http.Request) {
 	go func() {
 		for {
 			m := <-clientChan
-			log.Print("read from peers loop")
+
 			if err := conn.WriteMessage(websocket.TextMessage, m); err != nil {
 				log.Println(err)
 				// unsubscribe when write is not succesfull
